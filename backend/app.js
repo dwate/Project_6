@@ -1,40 +1,37 @@
+// MONGODB PW: I0FzSLRxS8nk9H6i
+// MONGODB Connection: mongodb+srv://Dave:<password>@cluster0.gqpv1.mongodb.net/<dbname>?retryWrites=true&w=majority
+
 const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const path = require('path');
+
+const sauceRoutes = require('./routes/sauce');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
-app.use('/api/sauces', (req, res, next) => {
-    const sauces = [
-        {
-            _id: 'sakjfk',
-            userId: 'ghghgh',
-            name: 'one hot sauce',
-            manufacturer: 'one',
-            description: 'hot sauce',
-            mainPepper: 'hot',
-            imageUrl: '',
-            heat: 6,
-            likes: 5,
-            dislikes: 3,
-            usersLiked: 'djddj',
-            usersDisliked: 'shshs',
-        },
-        {
-            _id: 'sakjff',
-            userId: 'ghghgh',
-            name: 'two hot sauce',
-            manufacturer: 'two',
-            description: 'hot sauce',
-            mainPepper: 'hot',
-            imageUrl: '',
-            heat: 8,
-            likes: 15,
-            dislikes: 30,
-            usersLiked: 'djddj',
-            usersDisliked: 'shshs',
-        },
-    ];
-    res.status(200).json(sauces)
+mongoose.connect('mongodb+srv://Dave:I0FzSLRxS8nk9H6i@cluster0.gqpv1.mongodb.net/<dbname>?retryWrites=true&w=majority')
+  .then(() => {
+    console.log('Successfully connected to MongoDB Atlas!');
+  })
+  .catch((error) => {
+    console.log('Unable to connect to MongoDB Atlas!');
+    console.error(error);
   });
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+  });
+
+app.use(bodyParser.json());
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+ app.use('/api/sauces', sauceRoutes);
+ app.use('/api/auth', userRoutes);
   
   
 module.exports = app;
