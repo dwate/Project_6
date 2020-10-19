@@ -1,6 +1,6 @@
 // MONGODB PW: I0FzSLRxS8nk9H6i
 // MONGODB Connection: mongodb+srv://Dave:<password>@cluster0.gqpv1.mongodb.net/<dbname>?retryWrites=true&w=majority
-
+//                     mongodb+srv://Dave:<password>@cluster0.gqpv1.mongodb.net/<dbname>?retryWrites=true&w=majority
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -30,8 +30,11 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
- app.use('/api/sauces', sauceRoutes);
- app.use('/api/auth', userRoutes);
-  
+
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/auth', userRoutes);
+
+
+
   
 module.exports = app;

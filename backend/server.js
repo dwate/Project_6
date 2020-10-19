@@ -44,4 +44,4 @@ const normalizePort = val => {
     console.log('Listening on ' + bind);
   });
 
-server.listen(process.env.PORT || 3000);
+server.listen(port);

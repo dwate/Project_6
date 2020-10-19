@@ -1,7 +1,16 @@
-const Sauce =require('../models/sauce');
+const Sauce = require('../models/sauce');
 const fs = require('fs');
 
-exports.createSauce = (req, res, next) => {
+
+/* exports.createSauce = (req, res, next) => {
+  console.log(req.body);
+  res.status(201).json({
+    message: 'Thing created successfully!'
+  });
+};   */
+
+
+ exports.createSauce = ('/', (req, res, next) => {
   req.body.sauce = JSON.parse(req.body.sauce);
   const url = req.protocol + '://' + req.get('host'); 
   const sauce = new Sauce({
@@ -9,19 +18,22 @@ exports.createSauce = (req, res, next) => {
       name: req.body.sauce.name,
       manufacturer: req.body.sauce.manufacturer,
       description: req.body.sauce.description,
-      mainPepper: req.body.sauce.mainPepper,
-      imageUrl: url + '/images/' + req.file.filename,
       heat: req.body.sauce.heat,
-      like: req.body.sauce.like,
-      dislikes: req.body.sauce.dislikes,
-      usersLiked: req.body.sauce.usersLiked,
-      usersDisliked: req.body.sauce.usersDisliked,
+      likes: [], // req.body.sauce.like,
+      dislikes: [], // req.body.sauce.dislikes,
+      imageUrl: url + '/images/' + req.file.filename,
+ //     imageUrl: `${req.protocol}://${req.get("host")}/images/${
+   //              req.file.filename}`,
+      mainPepper: req.body.sauce.mainPepper,
+      
+      usersLiked: [], // req.body.sauce.usersLiked,
+      usersDisliked: [] // req.body.sauce.usersDisliked,
     });
     sauce.save().then(
         () => {
           res.status(201).json({
             message: 'Post saved successfully'
-          })
+          });
         }
       ).catch(
         (error) => {
@@ -30,9 +42,9 @@ exports.createSauce = (req, res, next) => {
           });
         }
       );
-    };
+    });  
 
-    exports.getOneSauce = (req, res, next) => {
+    exports.getSauceById = (req, res, next) => {
         Sauce.findOne({
           _id: req.params.id
         }).then(
@@ -43,6 +55,7 @@ exports.createSauce = (req, res, next) => {
           (error) => {
             res.status(404).json({
               error: error
+  
             });
           }
         );
@@ -62,10 +75,10 @@ exports.createSauce = (req, res, next) => {
             mainPepper: req.body.sauce.mainPepper,
             imageUrl: url + '/images/' + req.file.filename,
             heat: req.body.sauce.heat,
-            like: req.body.sauce.like,
+            likes: req.body.sauce.likes,
             dislikes: req.body.sauce.dislikes,
             usersLiked: req.body.sauce.usersLiked,
-            usersDisliked: req.body.sauce.usersDisliked,
+            usersDisliked: req.body.sauce.usersDisliked
         };
       } else {
         sauce = {
@@ -77,10 +90,10 @@ exports.createSauce = (req, res, next) => {
           mainPepper: req.body.mainPepper,
           imageUrl: req.body.imageUrl,
           heat: req.body.heat,
-          like: req.body.like,
+          likes: req.body.likes,
           dislikes: req.body.dislikes,
           usersLiked: req.body.usersLiked,
-          usersDisliked: req.body.usersDisliked,
+          usersDisliked: req.body.usersDisliked
         };
       }
           Sauce.updateOne({_id: req.params.id}, sauce).then(
@@ -99,7 +112,7 @@ exports.createSauce = (req, res, next) => {
         };
 
         exports.deleteSauce = (req, res, next) => {
-            Sauce.deleteOne({_id: req.params.id}).then(
+            Sauce.findOne({_id: req.params.id}).then(
               (sauce) => {
                 const filename = sauce.imageUrl.split('/images/')[1];
                 fs.unlink('images/' + filename, () => {
@@ -121,16 +134,64 @@ exports.createSauce = (req, res, next) => {
         );
       };
 
-          exports.getAllSauce = (req, res, next) => {
-            Sauce.find().then(
-              (sauces) => {
-                res.status(200).json(sauces);
-              }
-            ).catch(
-              (error) => {
-                res.status(400).json({
-                  error: error
-                });
-              }
-            );
-            };
+    /*  exports.getSauces = ('/', (req, res, next) => {
+        const sauce = [
+          {
+            _id: "oimjoijlhui",
+            name: "Black Garlic",
+            manufacturer: "Bravado Spice Company",
+            description:
+                "Team Bravado is back at it with an elevated offering where Carolina Reaper meets aged black garlic. The sweetness of the slowly cooked garlic tempers the initial bitter burn of the Reaper, but not for long... This is a biting hot sauce you'll want in marinades, sauces, dressings, and on those garlic wings! ",
+            heat: 6,
+            likes: 100,
+            dislikes: 0,
+            imageUrl: "https://cdn.shopify.com/s/files/1/2086/9287/products/bravado-blackgarlichotsauce_1024x1024.jpg?v=1527270029",
+            mainPepper: "Carolina Reaper",
+            usersLiked: [],
+            usersDisliked: [],
+        },
+        {
+            _id: "sildjhv",
+            name: "Smoked Onion",
+            manufacturer: "Butterfly Bakery",
+            description:
+                "The makers at Butterfly Bakery smoke Vermont onions with maplewood to mix with red jalapeños for this sweet and tangy sauce. Great on everything from bagels lox & cream cheese to hummus to pork and whatever else you can name. The medium heat level makes it the perfect smoky sauce for anyone!",
+            heat: 3,
+            likes: 100,
+            dislikes: 0,
+            imageUrl: "https://cdn.shopify.com/s/files/1/2086/9287/products/smokedonion1_1024x1024_copy_1024x1024.jpg?v=1538413599",
+            mainPepper: "Jalapeños",
+            usersLiked: [],
+            usersDisliked: [],
+        },
+        {
+            _id: "eroimfgjlfh",
+            name: "Blair's Ultra Death Sauce",
+            manufacturer: "Blair's",
+            description:
+                "Blair's Ultra Death has established itself as a bit of a legend within the hot sauce world.\n\nIf there's one thing that creator Blair Lazar does well it's retaining the flavour in his super-hot sauces. They'll melt your face off for sure, but despite the extract they still taste damned fine.\n\nJust to emphasise the seriousness of the heat we're dealing with here, all Blair's super-hot sauces in the Death range now come in a nifty coffin box with his trademark skull keyring attached to the bottle.",
+            heat: 9,
+            likes: 100,
+            dislikes: 0,
+            imageUrl: "https://www.chilliworld.com/content/images/thumbs/0000827_blairs-ultra-death-sauce-in-a-coffin_550.jpeg",
+            mainPepper: "Carolina Reaper",
+            usersLiked: [],
+            usersDisliked: [],
+        },
+        ];
+        res.status(200).json(sauce);
+      }); */
+
+      exports.getSauces = (req, res, next) => {
+        Sauce.find().then(
+          (sauces) => {
+            res.status(200).json(sauces);
+          }
+        ).catch(
+          (error) => {
+            res.status(400).json({
+              error: error
+            });
+          }
+        );
+        };  

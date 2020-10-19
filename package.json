@@ -1,7 +1,7 @@
 {
   "name": "hot-takes",
   "version": "1.0.0",
-  "description": "",
+  "description": "## Installation ## Clone this repo, run `npm install`.",
   "main": "index.html",
   "scripts": {
     "start": "run-script-os",
@@ -12,8 +12,18 @@
   "license": "ISC",
   "dependencies": {
     "concurrently": "^5.2.0",
-    "http-server": "^0.11.1",
+    "http-server": "^0.12.3",
     "live-server": "^1.2.1",
+    "multer": "^1.4.2",
     "run-script-os": "^1.0.7"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwate/Project_6.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dwate/Project_6/issues"
+  },
+  "homepage": "https://github.com/dwate/Project_6#readme"
 }
